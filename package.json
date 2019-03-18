@@ -1,0 +1,21 @@
+{
+  "name": "sessions",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sessions editor CLI",
+  "main": "main.js",
+  "scripts": {
+    "test": "There's no tests but it's fine!",
+    "tsc": "tsc",
+    "tsc:w": "tsc -w",
+    "lite": "lite-server",
+    "watch": "nodemon ./dist/index.js",
+    "start": "concurrently \"npm run tsc:w\" \"npm run watch\" "},
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^4.1.0",
+    "lite-server": "^2.4.0",
+    "typescript": "^3.3.3333"
+  }
+}
