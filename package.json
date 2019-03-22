@@ -23,6 +23,8 @@
     "webpack-dev-server": "^3.2.1"
   },
   "dependencies": {
-    "@types/node": "^11.11.5"
+    "@types/adm-zip": "^0.4.32",
+    "@types/node": "^11.11.5",
+    "adm-zip": "^0.4.13"
   }
 }

@@ -1,20 +1,9 @@
-interface Person {
-  age: number,
-  name: string,
-  say(): string
-}
+import Unzipper from './src/unzipper'
+const args = process.argv.slice(2);
+const unzip = new Unzipper(args[0])
 
-let mike = {
-  age: 25, 
-  name:"Mike", 
-  say: function() { 
-      return "My name is " + this.name + 
-             " and I'm " + this.age + " years old!"
-  }
+if (unzip.validateInputFiles()) {
+  let accData: any = unzip.readAccelerometerDataToArray()
+  let gyroData: any = unzip.readGyroDataToArray()
+  
 }
-
-function sayIt(person: Person) {
-  return person.say();
-}
-
-console.info(sayIt(mike))
