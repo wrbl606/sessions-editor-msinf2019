@@ -6,16 +6,23 @@
   "main": "main.js",
   "scripts": {
     "test": "There's no tests but it's fine!",
-    "tsc": "tsc",
-    "tsc:w": "tsc -w",
-    "lite": "lite-server",
-    "watch": "nodemon ./dist/index.js",
-    "start": "concurrently \"npm run tsc:w\" \"npm run watch\" "},
+    "start": "concurrently -n webpack,app \"npm run build:dev\" \"npm run watch\"",
+    "watch": "\"nodemon ./dist/app.js\"",
+    "build:dev": "webpack --env dev --watch --mode production --progress --profile --colors",
+    "build": "webpack --env prod --mode production --progress --profile --colors"
+  },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^4.1.0",
     "lite-server": "^2.4.0",
-    "typescript": "^3.3.3333"
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.3.4000",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0",
+    "webpack-dev-server": "^3.2.1"
+  },
+  "dependencies": {
+    "@types/node": "^11.11.5"
   }
 }

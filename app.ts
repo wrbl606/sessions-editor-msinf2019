@@ -17,4 +17,4 @@ function sayIt(person: Person) {
   return person.say();
 }
 
-console.log(sayIt(mike))
+console.info(sayIt(mike))
