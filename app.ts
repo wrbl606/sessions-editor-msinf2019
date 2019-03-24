@@ -1,9 +1,11 @@
-import Unzipper from './src/unzipper'
+import Unzipper from './src/unzipper';
 const args = process.argv.slice(2);
-const unzip = new Unzipper(args[0])
+const unzip = new Unzipper(args[0]);
 
 if (unzip.validateInputFiles()) {
-  let accData: any = unzip.readAccelerometerDataToArray()
-  let gyroData: any = unzip.readGyroDataToArray()
-  
+  let accData: any = unzip.readAccelerometerDataToArray();
+  let gyroData: any = unzip.readGyroDataToArray();
+
+  console.table(accData);
+  console.table(gyroData);
 }
