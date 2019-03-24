@@ -12,6 +12,7 @@ export default class SessionUnzipper {
     this.zip = new AdmZip(sessionArchivePath);
     const fileName: string = Path.basename(sessionArchivePath, '.zip');
     const templateName = this.getSessionInternalFolderName(fileName);
+    console.log({ templateName });
     this.accEntry = this.zip.getEntry(`${templateName}/accelerometer.csv`);
     this.gyroEntry = this.zip.getEntry(`${templateName}/gyro.csv`);
   }
@@ -20,7 +21,9 @@ export default class SessionUnzipper {
     const sessionDateFromFileName: string = fileName.split(' ')[0];
     const sessionTimeFromFileName: string = fileName
       .split(' ')[1]
-      .replace(/-/g, ':');
+      // for some reason
+      .replace(/-/g, ':')
+      .replace(/_/g, ':');
 
     return `${sessionDateFromFileName} ${sessionTimeFromFileName}`;
   }
