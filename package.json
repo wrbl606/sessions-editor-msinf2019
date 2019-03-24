@@ -5,7 +5,7 @@
   "description": "Sessions editor CLI",
   "main": "main.js",
   "scripts": {
-    "test": "There's no tests but it's fine!",
+    "test": "npm build",
     "start": "concurrently -n webpack,app \"npm run build:dev\" \"npm run watch\"",
     "watch": "\"nodemon ./dist/app.js\"",
     "build:dev": "webpack --env dev --watch --mode production --progress --profile --colors",
