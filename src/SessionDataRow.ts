@@ -1,4 +1,4 @@
-export default class Input {
+export default class SessionDataRow {
   time: number;
   x: number;
   y: number;
