@@ -8,13 +8,12 @@ function setLimit(arg = '2000') {
   const arg_i = parseInt(arg);
 
   if (Number.isInteger(arg_i) === false) {
-    console.log('Limit has to be an integer.');
+    throw new Error('Limit has to be an integer.');
     return;
   }
 
   if (arg_i < 1) {
-    console.log('Limit has to be greater than 0.');
-    return;
+    throw new Error('Limit has to be greater than 0.');
   }
 
   limit = Math.round(arg_i);
@@ -24,12 +23,12 @@ function setFiles(arg = '-1') {
   const arg_i = parseInt(arg);
 
   if (arg_i < 1) {
-    console.log('Number of files has to be greater than 0.');
+    throw new Error('Number of files has to be greater than 0.');
     return;
   }
 
   if (Number.isInteger(arg_i) === false) {
-    console.log('Number of files has to be an integer.');
+    throw new Error('Number of files has to be an integer.');
     return;
   }
 
@@ -45,10 +44,3 @@ for (let j = 0; j < process.argv.length; j++) {
 }
 
 export { limit, files, isInfo };
-
-//const fs = require('fs');
-//fs.truncate()
-
-// limit nie może być większy niż liczba wpisów w obu plikach
-// liczba plików nie może być większa niż liczba wpisów
-// implementacja w app.ts
