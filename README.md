@@ -6,6 +6,7 @@ This is a CLI program for managing large datasets from movement sensors.
 
 In the project directory run:
 ```
-npm i
+npm i mkdirp
+npm i objects-to-csv
 npm run start
 ```
