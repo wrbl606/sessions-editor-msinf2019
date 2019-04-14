@@ -7,5 +7,6 @@
   "prettier.bracketSpacing": true,
   "prettier.endOfLine": "lf",
   "prettier.tabWidth": 2,
-  "prettier.trailingComma": "es5"
+  "prettier.trailingComma": "es5",
+  "prettier.ignorePath": ".prettierignore"
 }
