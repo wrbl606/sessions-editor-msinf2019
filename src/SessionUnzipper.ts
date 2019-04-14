@@ -102,7 +102,7 @@ export default class SessionUnzipper {
    for (let i: number = 0; i < data.length; i++){
    if (i === limit){
    fileindex += 1;
-   new ObjectsToCsv(data.slice(0, limit)).toDisk(`C:/Users/barte/OneDrive/Pulpit/zadanko/dist/${this.fileName}/${name}-${fileindex}.csv`);
+   new ObjectsToCsv(data.slice(0, limit)).toDisk(`/dist/${this.fileName}/${name}-${fileindex}.csv`);
             data.splice(0, limit);
             i = 0;
    }
