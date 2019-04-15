@@ -4,7 +4,6 @@ import SessionDataRow from './SessionDataRow';
 const ObjectsToCsv = require('objects-to-csv');
 const mkdirp = require('mkdirp');
 
-
 export default class SessionUnzipper {
   private zip: AdmZip;
   private accEntry: AdmZip.IZipEntry;
@@ -18,7 +17,7 @@ export default class SessionUnzipper {
     const templateName = this.getSessionInternalFolderName(fileName);
     this.accEntry = this.zip.getEntry(`${templateName}/accelerometer.csv`);
     this.gyroEntry = this.zip.getEntry(`${templateName}/gyro.csv`);
-	this.fileName=fileName;
+    this.fileName = fileName;
   }
 
   private getSessionInternalFolderName(fileName: string): string {
@@ -56,7 +55,7 @@ export default class SessionUnzipper {
     const list = this.zip.readAsText(entry).split('\n');
     const arr: Array<SessionDataRow> = [];
     for (let i = 1; i < list.length - 1; i++) {
-	  arr.push(this.rawSessionDataRowToInput(this.getSessionDataRow(list[i])));
+      arr.push(this.rawSessionDataRowToInput(this.getSessionDataRow(list[i])));
     }
     return arr;
   }
@@ -74,7 +73,7 @@ export default class SessionUnzipper {
           .substring(1)
       );
     }
-	
+
     return temp_line;
   }
 
@@ -85,7 +84,6 @@ export default class SessionUnzipper {
     const x: string = rawSessionDataRow[1];
     const y: string = rawSessionDataRow[2];
     const z: string = rawSessionDataRow[3];
-	
 
     return new SessionDataRow(
       parseInt(time),
@@ -94,22 +92,31 @@ export default class SessionUnzipper {
       parseFloat(z)
     );
   }
-  public createCsvFromArray(data: any[], limit: number, name: string, fileindex: number) {
-   mkdirp(this.fileName, (err: any)=> {
-   if(err){
-   console.log("Error");
-   }else{
-   for (let i: number = 0; i < data.length; i++){
-   if (i === limit){
-   fileindex += 1;
-   new ObjectsToCsv(data.slice(0, limit)).toDisk(`/dist/${this.fileName}/${name}-${fileindex}.csv`);
+  public createCsvFromArray(
+    data: any[],
+    limit: number,
+    name: string,
+    maxFiles: number
+  ) {
+    let fileIndex = 0;
+    mkdirp(this.fileName, (err: any) => {
+      if (err) {
+        console.error(err);
+      } else {
+        for (let i: number = 0; i < data.length; i++) {
+          if (maxFiles <= fileIndex) break;
+
+          if (i === limit) {
+            fileIndex += 1;
+            new ObjectsToCsv(data.slice(0, limit)).toDisk(
+              `./${this.fileName}/${name}-${fileIndex}.csv`
+            );
             data.splice(0, limit);
             i = 0;
-   }
-   }
-   console.log(`You have successfully created the .csv files`);
-   }
-   });
+          }
+        }
+        console.log(`You have successfully created the .csv files`);
+      }
+    });
   }
- 
 }
