@@ -68,7 +68,6 @@ The number of records in the file: ${gyroData.length}.
 You can inspect the number of records in the file by adding parameter -i or --info after the session name.
 You can change the maximum number of output files by adding parameter -f {number} or --files {number} after the session name, replacing {number} with a number you want the limit to be. 
   `);
-  
- unzip.createCsvFromArray(accData, limit, "accelerometer", files);
- unzip.createCsvFromArray(gyroData, limit, "gyro", files);
- 
+
+unzip.createCsvFromArray(accData, limit, 'accelerometer', numOfFiles);
+unzip.createCsvFromArray(gyroData, limit, 'gyro', numOfFiles);
