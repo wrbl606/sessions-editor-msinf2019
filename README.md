@@ -6,7 +6,9 @@ This is a CLI program for managing large datasets from movement sensors.
 
 In the project directory run:
 ```
-npm i mkdirp
-npm i objects-to-csv
-npm run start
+git clone https://github.com/wrbl606/sessions-editor-msinf2019.git
+npm i
+npm run build
 ```
+
+App will be built at `dist/app.js`.
