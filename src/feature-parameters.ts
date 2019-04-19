@@ -1,7 +1,7 @@
 'use strict';
 
 var limit = 2000;
-var files = -1;
+var files = 2;
 var isInfo: boolean = false;
 
 function setLimit(arg = '2000') {

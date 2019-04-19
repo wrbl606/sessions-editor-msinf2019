@@ -1,8 +1,10 @@
 import SessionUnzipper from './src/SessionUnzipper';
+import SessionSave from './src/SessionSave';
 import SessionDataRow from './src/SessionDataRow';
 import { limit, files, isInfo } from './src/feature-parameters';
 const args = process.argv.slice(2);
 const unzip = new SessionUnzipper(args[0]);
+const save = new SessionSave();
 
 if (!unzip.validateInputFiles())
   throw new Error('Given file is not proper session file');
@@ -68,6 +70,6 @@ The number of records in the file: ${gyroData.length}.
 You can inspect the number of records in the file by adding parameter -i or --info after the session name.
 You can change the maximum number of output files by adding parameter -f {number} or --files {number} after the session name, replacing {number} with a number you want the limit to be. 
   `);
-
-unzip.createCsvFromArray(accData, limit, 'accelerometer', numOfFiles);
-unzip.createCsvFromArray(gyroData, limit, 'gyro', numOfFiles);
+save.createFolder(unzip.fileName);
+save.saveToCsv(accData, numOfFiles, unzip.fileName, limit, 'accelerometer');
+save.saveToCsv(gyroData, numOfFiles, unzip.fileName, limit, 'gyro');
