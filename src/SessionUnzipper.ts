@@ -1,8 +1,6 @@
 import Path from 'path';
 import AdmZip from 'adm-zip';
 import SessionDataRow from './SessionDataRow';
-const ObjectsToCsv = require('objects-to-csv');
-const mkdirp = require('mkdirp');
 
 export default class SessionUnzipper {
   private zip: AdmZip;
@@ -91,32 +89,5 @@ export default class SessionUnzipper {
       parseFloat(y),
       parseFloat(z)
     );
-  }
-  public createCsvFromArray(
-    data: any[],
-    limit: number,
-    name: string,
-    maxFiles: number
-  ) {
-    let fileIndex = 0;
-    mkdirp(this.fileName, (err: any) => {
-      if (err) {
-        console.error(err);
-      } else {
-        for (let i: number = 0; i < data.length; i++) {
-          if (maxFiles <= fileIndex) break;
-
-          if (i === limit) {
-            fileIndex += 1;
-            new ObjectsToCsv(data.slice(0, limit)).toDisk(
-              `./${this.fileName}/${name}-${fileIndex}.csv`
-            );
-            data.splice(0, limit);
-            i = 0;
-          }
-        }
-        console.log(`You have successfully created the .csv files`);
-      }
-    });
   }
 }
