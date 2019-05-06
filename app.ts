@@ -37,7 +37,7 @@ if (parameters.isInfo) {
     entries: accData.length
   }, {
     sensor: 'Gyroscope',
-    time: gyroData[accData.length - 1].time - gyroData[0].time,
+    time: gyroData[gyroData.length - 1].time - gyroData[0].time,
     entries: gyroData.length
   },
   ];
