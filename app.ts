@@ -60,6 +60,8 @@ save.saveToCsv(
 );
 save.saveToCsv(gyroData, numOfFiles, unzip.fileName, parameters.limit, 'gyro');
 
+// P E A K S
+
 var accValue = [];
 var accTime = [];
 
@@ -75,8 +77,7 @@ for (let i = 1; i < accData.length - 1; i++)
   }
 
 console.log('\n acc Peaks: \n');
-for (let i = 0; i <= accValue.length - 1; i++)
-  console.log(accValue[i], accTime[i]);
+for (let i = 0; i < accValue.length; i++) console.log(accValue[i], accTime[i]);
 
 var gyroValue = [];
 var gyroTime = [];
@@ -93,5 +94,19 @@ for (let i = 1; i < gyroData.length - 1; i++)
   }
 
 console.log('\n gyro Peaks: \n');
-for (let i = 0; i <= gyroValue.length - 1; i++)
+for (let i = 0; i < gyroValue.length; i++)
   console.log(gyroValue[i], gyroTime[i]);
+
+// I N T E G R A L (numeric, of course)
+
+var accIntegral = 0;
+for (let i = 0; i < accData.length - 1; i++) {
+  accIntegral += accData[i].norm * (accData[i + 1].time - accData[i].time);
+}
+
+var gyroIntegral = 0;
+for (let i = 0; i < gyroData.length - 1; i++) {
+  gyroIntegral += gyroData[i].norm * (gyroData[i + 1].time - gyroData[i].time);
+}
+
+console.log('acc Integral: ', accIntegral, '\ngyro Integral: ', gyroIntegral);
