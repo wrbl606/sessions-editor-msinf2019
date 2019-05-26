@@ -76,9 +76,6 @@ for (let i = 1; i < accData.length - 1; i++)
     accTime.push(accData[i].time);
   }
 
-console.log('\n acc Peaks: \n');
-for (let i = 0; i < accValue.length; i++) console.log(accValue[i], accTime[i]);
-
 var gyroValue = [];
 var gyroTime = [];
 
@@ -122,10 +119,6 @@ function Maximum(...args: number[]) {
   return max;
 }
 
-console.log('\n gyro Peaks: \n');
-for (let i = 0; i < gyroValue.length; i++)
-  console.log(gyroValue[i], gyroTime[i]);
-
 // I N T E G R A L (numeric, of course)
 
 var accIntegral = 0;
@@ -138,24 +131,56 @@ for (let i = 0; i < gyroData.length - 1; i++) {
   gyroIntegral += gyroData[i].norm * (gyroData[i + 1].time - gyroData[i].time);
 }
 
-console.log('acc Integral: ', accIntegral, '\ngyro Integral: ', gyroIntegral);
+var avgAccPeaks =
+  ((accValue.length - 1) /
+    (accData[accData.length - 1].time - accData[0].time)) *
+  60000;
+var avgGyroPeaks =
+  ((gyroValue.length - 1) /
+    (gyroData[gyroData.length - 1].time - gyroData[0].time)) *
+  60000;
 
-console.log(
-  'gMin = ',
-  gMin,
-  'gMax = ',
-  gMax,
-  'accMin = ',
-  accMin,
-  'accMax = ',
-  accMax
-);
+var txt = unzip.fileName + '.txt';
 
-console.log(
-  'acc peaks per time: ',
-  (accValue.length - 1) / (accData[accData.length - 1].time - accData[0].time)
+var fs = require('fs');
+fs.writeFile(
+  txt,
+  accValue.length +
+    '\n' +
+    gyroValue.length +
+    '\n' +
+    avgAccPeaks +
+    '\n' +
+    avgGyroPeaks +
+    '\n' +
+    accMin +
+    '\n' +
+    gMin +
+    '\n' +
+    accMax +
+    '\n' +
+    gMax +
+    '\n' +
+    accIntegral +
+    '\n' +
+    gyroIntegral,
+  'utf8',
+  (err: Error) => {
+    if (err) throw err;
+    else console.log("It's saved!");
+  }
 );
-console.log(
-  'gyro peaks per time: ',
-  (gyroValue.length - 1) / (accData[accData.length - 1].time - accData[0].time)
-);
+/*Serializes data
+number of accelerometer peaks
+number of gyroscope peaks
+average number of accelerometer peaks per minute
+average number of gyroscope peaks per minute
+minimal peak of accelerometer
+minimal peak of gyroscope
+maximal peak of accelerometer
+maximal peak of gyroscope
+integral of accelerometer
+integral of gyroscope
+
+Need to write the name of the user by hand at the end of .txt file
+*/
