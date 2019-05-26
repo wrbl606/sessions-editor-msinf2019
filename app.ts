@@ -150,3 +150,12 @@ console.log(
   'accMax = ',
   accMax
 );
+
+console.log(
+  'acc peaks per time: ',
+  (accValue.length - 1) / (accData[accData.length - 1].time - accData[0].time)
+);
+console.log(
+  'gyro peaks per time: ',
+  (gyroValue.length - 1) / (accData[accData.length - 1].time - accData[0].time)
+);
