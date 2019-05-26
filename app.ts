@@ -93,6 +93,35 @@ for (let i = 1; i < gyroData.length - 1; i++)
     gyroTime.push(gyroData[i].time);
   }
 
+// find minimal peak
+
+const gMin = Minimum(...gyroValue);
+const accMin = Minimum(...accValue);
+const gMax = Maximum(...gyroValue);
+const accMax = Maximum(...accValue);
+
+function Minimum(...args: number[]) {
+  var i;
+  var min = Infinity;
+  for (i = 0; i < args.length; i++) {
+    if (args[i] < min) {
+      min = args[i];
+    }
+  }
+  return min;
+}
+
+function Maximum(...args: number[]) {
+  var i;
+  var max = -Infinity;
+  for (i = 0; i < args.length; i++) {
+    if (args[i] > max) {
+      max = args[i];
+    }
+  }
+  return max;
+}
+
 console.log('\n gyro Peaks: \n');
 for (let i = 0; i < gyroValue.length; i++)
   console.log(gyroValue[i], gyroTime[i]);
@@ -110,3 +139,14 @@ for (let i = 0; i < gyroData.length - 1; i++) {
 }
 
 console.log('acc Integral: ', accIntegral, '\ngyro Integral: ', gyroIntegral);
+
+console.log(
+  'gMin = ',
+  gMin,
+  'gMax = ',
+  gMax,
+  'accMin = ',
+  accMin,
+  'accMax = ',
+  accMax
+);
