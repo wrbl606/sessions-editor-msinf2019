@@ -136,18 +136,18 @@ const accMin = Minimum(...accValue);
 const gMax = Maximum(...gyroValue);
 const accMax = Maximum(...accValue);
 
-var avgAccPeaks =
+const avgAccPeaks =
   ((accValue.length - 1) /
     (accData[accData.length - 1].time - accData[0].time)) *
   60000;
-var avgGyroPeaks =
+const avgGyroPeaks =
   ((gyroValue.length - 1) /
     (gyroData[gyroData.length - 1].time - gyroData[0].time)) *
   60000;
 
-var txt = unzip.fileName + '.txt';
+const txt = unzip.fileName + '.txt';
 
-var fs = require('fs');
+const fs = require('fs');
 fs.writeFile(
   txt,
   accValue.length +
@@ -192,6 +192,12 @@ integral of gyroscope
 Need to write the name of the user by hand at the end of .txt file
 */
 
-//var accIntegralPerSecond = [];
-//for (let i = 0; i + 1000 < accData.length; i += 1000) {}
-// ^^ to też ze slice'ów.
+/*var accIntegralPerSecond = [];
+function perSecond(){
+for (let i = 0; i + 1000 < accData.length; i += 1000) {
+
+  
+}
+
+}
+ ^^ to też ze slice'ów. */
