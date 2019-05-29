@@ -64,8 +64,11 @@ save.saveToCsv(gyroData, numOfFiles, unzip.fileName, parameters.limit, 'gyro');
 
 var accValue = [];
 var accTime = [];
+var accIntegral = 0;
 
-for (let i = 1; i < accData.length - 1; i++)
+for (let i = 1; i < accData.length - 1; i++) {
+  accIntegral += accData[i].norm * (accData[i + 1].time - accData[i].time);
+
   if (
     (accData[i].norm > accData[i - 1].norm &&
       accData[i].norm > accData[i + 1].norm) ||
@@ -75,11 +78,15 @@ for (let i = 1; i < accData.length - 1; i++)
     accValue.push(accData[i].norm);
     accTime.push(accData[i].time);
   }
+}
 
 var gyroValue = [];
 var gyroTime = [];
+var gyroIntegral = 0;
 
-for (let i = 1; i < gyroData.length - 1; i++)
+for (let i = 1; i < gyroData.length - 1; i++) {
+  gyroIntegral += gyroData[i].norm * (gyroData[i + 1].time - gyroData[i].time);
+
   if (
     (gyroData[i].norm > gyroData[i - 1].norm &&
       gyroData[i].norm > gyroData[i + 1].norm) ||
@@ -89,6 +96,7 @@ for (let i = 1; i < gyroData.length - 1; i++)
     gyroValue.push(gyroData[i].norm);
     gyroTime.push(gyroData[i].time);
   }
+}
 
 // find minimal peak
 
@@ -117,18 +125,6 @@ function Maximum(...args: number[]) {
     }
   }
   return max;
-}
-
-// I N T E G R A L (numeric, of course)
-
-var accIntegral = 0;
-for (let i = 0; i < accData.length - 1; i++) {
-  accIntegral += accData[i].norm * (accData[i + 1].time - accData[i].time);
-}
-
-var gyroIntegral = 0;
-for (let i = 0; i < gyroData.length - 1; i++) {
-  gyroIntegral += gyroData[i].norm * (gyroData[i + 1].time - gyroData[i].time);
 }
 
 var avgAccPeaks =
