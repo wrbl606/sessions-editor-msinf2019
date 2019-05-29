@@ -60,51 +60,39 @@ save.saveToCsv(
 );
 save.saveToCsv(gyroData, numOfFiles, unzip.fileName, parameters.limit, 'gyro');
 
+const accSlices = accData.slice(parameters.limit);
+const gyroSlices = gyroData.slice(parameters.limit); //H E R E
+
 // P E A K S
 
-var accValue = [];
-var accTime = [];
-var accIntegral = 0;
-
-for (let i = 1; i < accData.length - 1; i++) {
-  accIntegral += accData[i].norm * (accData[i + 1].time - accData[i].time);
-
-  if (
-    (accData[i].norm > accData[i - 1].norm &&
-      accData[i].norm > accData[i + 1].norm) ||
-    (accData[i].norm < accData[i - 1].norm &&
-      accData[i].norm < accData[i + 1].norm)
-  ) {
-    accValue.push(accData[i].norm);
-    accTime.push(accData[i].time);
+function integral(array: Array<SessionDataRow>) {
+  let integral = 0;
+  for (let i = 1; i < array.length - 1; i++) {
+    integral += array[i].norm * (array[i + 1].time - array[i].time);
   }
+  return integral;
 }
 
-var gyroValue = [];
-var gyroTime = [];
-var gyroIntegral = 0;
-
-for (let i = 1; i < gyroData.length - 1; i++) {
-  gyroIntegral += gyroData[i].norm * (gyroData[i + 1].time - gyroData[i].time);
-
-  if (
-    (gyroData[i].norm > gyroData[i - 1].norm &&
-      gyroData[i].norm > gyroData[i + 1].norm) ||
-    (gyroData[i].norm < gyroData[i - 1].norm &&
-      gyroData[i].norm < gyroData[i + 1].norm)
-  ) {
-    gyroValue.push(gyroData[i].norm);
-    gyroTime.push(gyroData[i].time);
+function peaks(array: Array<SessionDataRow>) {
+  let peaks = [];
+  let times = [];
+  for (let i = 1; i < array.length - 1; i++) {
+    if (
+      (array[i].norm > array[i - 1].norm &&
+        array[i].norm > array[i + 1].norm) ||
+      (array[i].norm < array[i - 1].norm && array[i].norm < array[i + 1].norm)
+    ) {
+      peaks.push(accData[i].norm);
+      times.push(accData[i].time);
+    }
   }
+  return {
+    peaks,
+    times,
+  };
 }
 
-// find minimal peak
-
-const gMin = Minimum(...gyroValue);
-const accMin = Minimum(...accValue);
-const gMax = Maximum(...gyroValue);
-const accMax = Maximum(...accValue);
-
+// M i n s    a n d    M a x e s
 function Minimum(...args: number[]) {
   var i;
   var min = Infinity;
@@ -126,6 +114,27 @@ function Maximum(...args: number[]) {
   }
   return max;
 }
+
+// c a l c u l a t i n g
+
+// zamknąć w funkcję żeby zapisywać do slice'ów. Odtąd wszystko do slice'ów.
+
+const calcAccPeaks = peaks(accData);
+const accValue = calcAccPeaks.peaks;
+const accTime = calcAccPeaks.times;
+const accIntegral = integral(accData);
+
+const calcGyroPeaks = peaks(gyroData);
+const gyroValue = calcGyroPeaks.peaks;
+const gyroTime = calcGyroPeaks.times;
+const gyroIntegral = integral(gyroData);
+
+// find min and max peaks
+
+const gMin = Minimum(...gyroValue);
+const accMin = Minimum(...accValue);
+const gMax = Maximum(...gyroValue);
+const accMax = Maximum(...accValue);
 
 var avgAccPeaks =
   ((accValue.length - 1) /
@@ -166,6 +175,8 @@ fs.writeFile(
     else console.log("It's saved!");
   }
 );
+
+// Zamknąć w funkcję żeby zapisywać do slice'ów
 /*Serializes data
 number of accelerometer peaks
 number of gyroscope peaks
@@ -180,3 +191,7 @@ integral of gyroscope
 
 Need to write the name of the user by hand at the end of .txt file
 */
+
+//var accIntegralPerSecond = [];
+//for (let i = 0; i + 1000 < accData.length; i += 1000) {}
+// ^^ to też ze slice'ów.

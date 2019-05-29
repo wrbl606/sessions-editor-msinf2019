@@ -8,5 +8,6 @@
   "prettier.endOfLine": "lf",
   "prettier.tabWidth": 2,
   "prettier.trailingComma": "es5",
-  "prettier.ignorePath": ".prettierignore"
+  "prettier.ignorePath": ".prettierignore",
+  "files.autoSave": "onFocusChange"
 }
