@@ -29,7 +29,7 @@ export default class SessionSave {
         new ObjectsToCsv(data.slice(0, limit)).toDisk(
           `./${folderName}/${fileName}-${fileIndex}.csv`
         );
-        data.splice(0, limit);
+        data.splice(0, limit); // to pushuj do tablicy slices
         i = 0;
       }
     }
