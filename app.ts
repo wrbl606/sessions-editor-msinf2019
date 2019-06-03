@@ -2,6 +2,7 @@ import SessionUnzipper from './src/SessionUnzipper';
 import SessionSave from './src/SessionSave';
 import SessionDataRow from './src/SessionDataRow';
 import * as parameters from './src/ParametersHandler';
+import SessionCharacteristics from './src/SessionCharacteristics';
 const args = process.argv.slice(2);
 const unzip = new SessionUnzipper(args[0]);
 const save = new SessionSave();
@@ -51,16 +52,23 @@ parameters.validateParameters(accData, gyroData, numOfFiles);
 
 save.createFolder(unzip.fileName);
 save.saveToCsv(
-  accData,
+  [...accData],
   numOfFiles,
   unzip.fileName,
   parameters.limit,
   'accelerometer'
 );
-save.saveToCsv(gyroData, numOfFiles, unzip.fileName, parameters.limit, 'gyro');
+save.saveToCsv(
+  [...gyroData],
+  numOfFiles,
+  unzip.fileName,
+  parameters.limit,
+  'gyro'
+);
 // podzielić tablicę to co Bartek save to csv. Nie zapisywać do pliku tylko wydzieloną tablicę zapisać do tablicy.
 // podzielić tak jak na pliki
 const accSlices = new Array<Array<SessionDataRow>>();
+console.log(accData.length, parameters.limit);
 let counter = 0;
 do {
   accSlices.push(
@@ -68,9 +76,18 @@ do {
   );
   counter++;
 } while (accData.length > parameters.limit * (counter + 1));
-console.log(accSlices.length);
-
-const gyroSlices = gyroData.slice(parameters.limit); //H E R E
+//console.log(accSlices.length, accData.length, parameters.limit);
+//console.log(accSlices[accSlices.length - 1].length);
+const gyroSlices = new Array<Array<SessionDataRow>>(); //H E R E
+counter = 0;
+do {
+  gyroSlices.push(
+    gyroData.slice(parameters.limit * counter, parameters.limit * (counter + 1))
+  );
+  counter++;
+} while (gyroData.length > parameters.limit * (counter + 1));
+//console.log(gyroSlices.length, gyroData.length, parameters.limit);
+//console.log(gyroSlices[gyroSlices.length - 1].length);
 
 // P E A K S
 
@@ -128,12 +145,13 @@ function Maximum(...args: number[]) {
 
 // zamknąć w funkcję żeby zapisywać do slice'ów. Odtąd wszystko do slice'ów.
 
-function sliceToArrays(
+/*function sliceToArrays(
   slices: Array<Array<SessionDataRow>>,
   data: any[],
   maxFiles: number,
   limit: number,
-  smaller: number
+  smaller: number,
+  folderName: string,
 ) {
   let fileIndex = 0;
   for (let i: number = 0; i < smaller; i++) {
@@ -148,12 +166,47 @@ function sliceToArrays(
     }
   }
   console.log(`You have successfully finished Bartek's job.`);
+  
+}
+*/
+
+function toTxt(sufix: string, characteristics: SessionCharacteristics) {
+  let txt = 'char' + unzip.fileName + '-' + sufix + '.txt';
+
+  let fs = require('fs');
+  fs.writeFile(
+    txt,
+    characteristics.accValueLength +
+      '\n' +
+      characteristics.gyroValueLength +
+      '\n' +
+      characteristics.avgAccPeaks +
+      '\n' +
+      characteristics.avgGyroPeaks +
+      '\n' +
+      characteristics.accMin +
+      '\n' +
+      characteristics.gMin +
+      '\n' +
+      characteristics.accMax +
+      '\n' +
+      characteristics.gMax +
+      '\n' +
+      characteristics.accIntegral +
+      '\n' +
+      characteristics.gyroIntegral,
+    'utf8',
+    (err: Error) => {
+      if (err) throw err;
+      else console.log("It's saved!");
+    }
+  );
 }
 
 function serialization(
   acc: Array<SessionDataRow>,
   gyro: Array<SessionDataRow>
-) {
+): SessionCharacteristics {
   let calcAccPeaks = peaks(acc);
   let accValue = calcAccPeaks.peaks;
   let accTime = calcAccPeaks.times;
@@ -163,7 +216,17 @@ function serialization(
   let gyroValue = calcGyroPeaks.peaks;
   let gyroTime = calcGyroPeaks.times;
   let gyroIntegral = integral(gyro);
+  let accAvgInterval = 0;
+  let gyroAvgInterval = 0; // average intervals between peaks
+  for (let i = 1; i <= accTime[accTime.length]; i++) {
+    accAvgInterval += accTime[i] - accTime[i - 1];
+  }
+  accAvgInterval = accAvgInterval / accTime.length / 1000;
 
+  for (let i = 1; i <= gyroTime[gyroTime.length]; i++) {
+    gyroAvgInterval += gyroTime[i] - gyroTime[i - 1];
+  }
+  gyroAvgInterval = gyroAvgInterval / gyroTime.length / 1000;
   // find min and max peaks
 
   let gMin = Minimum(...gyroValue);
@@ -180,39 +243,30 @@ function serialization(
       (gyroData[gyroData.length - 1].time - gyroData[0].time)) *
     60000;
 
-  let txt = unzip.fileName + '.txt';
+  let accIntegralPerSecond =
+    accIntegral / (acc[acc.length - 1].time - acc[0].time);
+  let gyroIntegralPerSecond =
+    gyroIntegral / (gyro[gyro.length - 1].time - gyro[0].time);
 
-  let fs = require('fs');
-  fs.writeFile(
-    txt,
-    accValue.length +
-      '\n' +
-      gyroValue.length +
-      '\n' +
-      avgAccPeaks +
-      '\n' +
-      avgGyroPeaks +
-      '\n' +
-      accMin +
-      '\n' +
-      gMin +
-      '\n' +
-      accMax +
-      '\n' +
-      gMax +
-      '\n' +
-      accIntegral +
-      '\n' +
-      gyroIntegral,
-    'utf8',
-    (err: Error) => {
-      if (err) throw err;
-      else console.log("It's saved!");
-    }
+  return new SessionCharacteristics(
+    accValue.length,
+    gyroValue.length,
+    avgAccPeaks,
+    avgGyroPeaks,
+    accMin,
+    gMin,
+    accMax,
+    gMax,
+    accIntegral,
+    gyroIntegral,
+    accIntegralPerSecond,
+    gyroIntegralPerSecond,
+    accAvgInterval,
+    gyroAvgInterval
   );
 }
 
-serialization(accSlices[0], gyroSlices);
+serialization(accSlices[0], gyroSlices[0]);
 
 // Zamknąć w funkcję żeby zapisywać do slice'ów
 /*Serializes data
@@ -229,19 +283,3 @@ integral of gyroscope
 
 Need to write the name of the user by hand at the end of .txt file
 */
-
-/*var accIntegralPerSecond = [];
-function perSecond(){
-for (let i = 0; i + 1000 < accData.length; i += 1000) {sliceToArrays(
-  accData,
-  numOfFiles,
-  unzip.fileName,
-  parameters.limit,
-  'accelerometer'
-); 
-
-  
-}
-
-}
- ^^ to też ze slice'ów. */
