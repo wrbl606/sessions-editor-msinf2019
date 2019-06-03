@@ -32,7 +32,8 @@ export default class SessionCharacteristics {
     this.accValueLength = accValueLength;
     this.gyroValueLength = gyroValueLength;
     this.avgAccPeaks = avgAccPeaks;
-    (this.avgGyroPeaks = avgGyroPeaks), (this.accMin = accMin);
+    this.avgGyroPeaks = avgGyroPeaks;
+    this.accMin = accMin;
     this.gMin = gMin;
     this.accMax = accMax;
     this.gMax = gMax;

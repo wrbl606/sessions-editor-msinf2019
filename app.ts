@@ -68,7 +68,7 @@ save.saveToCsv(
 // podzielić tablicę to co Bartek save to csv. Nie zapisywać do pliku tylko wydzieloną tablicę zapisać do tablicy.
 // podzielić tak jak na pliki
 const accSlices = new Array<Array<SessionDataRow>>();
-console.log(accData.length, parameters.limit);
+//console.log(accData.length, parameters.limit);
 let counter = 0;
 do {
   accSlices.push(
@@ -143,35 +143,8 @@ function Maximum(...args: number[]) {
 
 // c a l c u l a t i n g
 
-// zamknąć w funkcję żeby zapisywać do slice'ów. Odtąd wszystko do slice'ów.
-
-/*function sliceToArrays(
-  slices: Array<Array<SessionDataRow>>,
-  data: any[],
-  maxFiles: number,
-  limit: number,
-  smaller: number,
-  folderName: string,
-) {
-  let fileIndex = 0;
-  for (let i: number = 0; i < smaller; i++) {
-    if (maxFiles <= fileIndex) {
-      break;
-    }
-    if (i === limit) {
-      fileIndex += 1;
-
-      slices.push(data.splice(0, limit)); // to pushuj do tablicy slices
-      i = 0;
-    }
-  }
-  console.log(`You have successfully finished Bartek's job.`);
-  
-}
-*/
-
-function toTxt(sufix: string, characteristics: SessionCharacteristics) {
-  let txt = 'char' + unzip.fileName + '-' + sufix + '.txt';
+function toTxt(slice: number, characteristics: SessionCharacteristics) {
+  let txt = 'char' + unzip.fileName + '-' + slice.toString() + '.txt';
 
   let fs = require('fs');
   fs.writeFile(
@@ -194,7 +167,11 @@ function toTxt(sufix: string, characteristics: SessionCharacteristics) {
       '\n' +
       characteristics.accIntegral +
       '\n' +
-      characteristics.gyroIntegral,
+      characteristics.gyroIntegral +
+      '\n' +
+      characteristics.accIntegralPerSecond +
+      '\n' +
+      characteristics.gyroIntegralPerSecond,
     'utf8',
     (err: Error) => {
       if (err) throw err;
@@ -218,13 +195,15 @@ function serialization(
   let gyroIntegral = integral(gyro);
   let accAvgInterval = 0;
   let gyroAvgInterval = 0; // average intervals between peaks
-  for (let i = 1; i <= accTime[accTime.length]; i++) {
+
+  for (let i = 1; i < accTime.length - 1; i++) {
     accAvgInterval += accTime[i] - accTime[i - 1];
   }
   accAvgInterval = accAvgInterval / accTime.length / 1000;
 
-  for (let i = 1; i <= gyroTime[gyroTime.length]; i++) {
+  for (let i = 1; i < gyroTime.length - 1; i++) {
     gyroAvgInterval += gyroTime[i] - gyroTime[i - 1];
+    //console.log('gyroAvgInterval iterator #', i);
   }
   gyroAvgInterval = gyroAvgInterval / gyroTime.length / 1000;
   // find min and max peaks
@@ -238,15 +217,20 @@ function serialization(
     ((accValue.length - 1) /
       (accData[accData.length - 1].time - accData[0].time)) *
     60000;
+  //console.log('avgAccPeaks');
   let avgGyroPeaks =
     ((gyroValue.length - 1) /
       (gyroData[gyroData.length - 1].time - gyroData[0].time)) *
     60000;
+  //console.log('avgGyroPeaks');
 
   let accIntegralPerSecond =
     accIntegral / (acc[acc.length - 1].time - acc[0].time);
+
+  //console.log('accintegralpersecond');
   let gyroIntegralPerSecond =
     gyroIntegral / (gyro[gyro.length - 1].time - gyro[0].time);
+  //console.log('gyrointegralpersecond');
 
   return new SessionCharacteristics(
     accValue.length,
@@ -265,8 +249,13 @@ function serialization(
     gyroAvgInterval
   );
 }
+for (let j = 0; j < accSlices.length; j++) {
+  let o = serialization(accSlices[j], gyroSlices[j]);
+  toTxt(j, o);
+}
+//console.log(accSlices.length);
 
-serialization(accSlices[0], gyroSlices[0]);
+//console.log(serialization(accSlices[1], gyroSlices[1]));
 
 // Zamknąć w funkcję żeby zapisywać do slice'ów
 /*Serializes data
