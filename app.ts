@@ -249,7 +249,9 @@ function serialization(
     gyroAvgInterval
   );
 }
-for (let j = 0; j < accSlices.length; j++) {
+let shorter = accSlices.length;
+if (gyroSlices.length < shorter) shorter = gyroSlices.length;
+for (let j = 0; j < shorter; j++) {
   let o = serialization(accSlices[j], gyroSlices[j]);
   toTxt(j, o);
 }
