@@ -171,7 +171,11 @@ function toTxt(slice: number, characteristics: SessionCharacteristics) {
       '\n' +
       characteristics.accIntegralPerSecond +
       '\n' +
-      characteristics.gyroIntegralPerSecond,
+      characteristics.gyroIntegralPerSecond +
+      '\n' +
+      characteristics.accAvgInterval +
+      '\n' +
+      characteristics.gyroAvgInterval,
     'utf8',
     (err: Error) => {
       if (err) throw err;
@@ -233,20 +237,20 @@ function serialization(
   //console.log('gyrointegralpersecond');
 
   return new SessionCharacteristics(
-    accValue.length,
-    gyroValue.length,
-    avgAccPeaks,
-    avgGyroPeaks,
-    accMin,
-    gMin,
-    accMax,
-    gMax,
-    accIntegral,
-    gyroIntegral,
-    accIntegralPerSecond,
-    gyroIntegralPerSecond,
-    accAvgInterval,
-    gyroAvgInterval
+    accValue.length, //number of accelerometer peaks
+    gyroValue.length, //number of gyroscope peaks
+    avgAccPeaks, //average number of accelerometer peaks per minute
+    avgGyroPeaks, //average number of gyroscope peaks per minute
+    accMin, //minimal peak of accelerometer
+    gMin, //minimal peak of gyroscope
+    accMax, //maximal peak of accelerometer
+    gMax, //aximal peak of gyroscope
+    accIntegral, //integral of accelerometer
+    gyroIntegral, //integral of gyroscope
+    accIntegralPerSecond, //integral of accelerometer per second
+    gyroIntegralPerSecond, //integral of gyroscope per second
+    accAvgInterval, //average interval between accelerometer peaks
+    gyroAvgInterval //average interval between gyroscope peaks
   );
 }
 let shorter = accSlices.length;
@@ -261,16 +265,15 @@ for (let j = 0; j < shorter; j++) {
 
 // Zamknąć w funkcję żeby zapisywać do slice'ów
 /*Serializes data
-number of accelerometer peaks
-number of gyroscope peaks
-average number of accelerometer peaks per minute
-average number of gyroscope peaks per minute
-minimal peak of accelerometer
-minimal peak of gyroscope
-maximal peak of accelerometer
-maximal peak of gyroscope
-integral of accelerometer
-integral of gyroscope
+
+
+
+
+
+
+
+
+
 
 Need to write the name of the user by hand at the end of .txt file
 */
