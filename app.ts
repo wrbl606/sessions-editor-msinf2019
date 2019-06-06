@@ -176,6 +176,7 @@ function toTxt(slice: number, characteristics: SessionCharacteristics) {
       characteristics.accAvgInterval +
       '\n' +
       characteristics.gyroAvgInterval,
+
     'utf8',
     (err: Error) => {
       if (err) throw err;
