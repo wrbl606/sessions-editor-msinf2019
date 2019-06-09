@@ -219,13 +219,10 @@ function serialization(
   let accMax = Maximum(...accValue);
 
   let avgAccPeaks =
-    ((accValue.length - 1) /
-      (accData[accData.length - 1].time - accData[0].time)) *
-    60000;
+    ((accValue.length - 1) / (acc[acc.length - 1].time - acc[0].time)) * 60000;
   //console.log('avgAccPeaks');
   let avgGyroPeaks =
-    ((gyroValue.length - 1) /
-      (gyroData[gyroData.length - 1].time - gyroData[0].time)) *
+    ((gyroValue.length - 1) / (gyro[gyro.length - 1].time - gyro[0].time)) *
     60000;
   //console.log('avgGyroPeaks');
 
@@ -263,16 +260,7 @@ for (let j = 0; j < shorter; j++) {
 //console.log(accSlices.length);
 
 //console.log(serialization(accSlices[1], gyroSlices[1]));
-
-// Zamknąć w funkcję żeby zapisywać do slice'ów
-/*Serializes data
-
-
-
-
-
-
-
+/*
 
 
 
